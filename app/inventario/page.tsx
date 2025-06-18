@@ -5,7 +5,14 @@ import { useEffect, useState } from 'react';
 export default function InventarioPage() {
   const [productos, setProductos] = useState<any[]>([]);
   const [modoEdicion, setModoEdicion] = useState<number | null>(null);
-  const [form, setForm] = useState({ titulo: '', descripcion: '', imagenUrl: '', stock: 0 });
+  const [form, setForm] = useState({
+  titulo: '',
+  descripcion: '',
+  imagenUrl: '',
+  precio: '',   // ahora string
+  stock: '',    // ahora string
+});
+
 
   useEffect(() => {
     fetchProductos();
@@ -23,16 +30,35 @@ export default function InventarioPage() {
       titulo: producto.titulo,
       descripcion: producto.descripcion,
       imagenUrl: producto.imagenUrl,
-      stock: producto.stock,
+      precio: producto.precio.toString(),  // convierte a string
+      stock: producto.stock.toString(),
     });
+
   };
 
   const handleGuardar = async () => {
+    if (
+      !form.titulo.trim() ||
+      !form.descripcion.trim() ||
+      !form.imagenUrl.trim() ||
+      isNaN(Number(form.precio)) ||
+      isNaN(Number(form.stock))
+    ) {
+      alert('Por favor completa todos los campos correctamente.');
+      return;
+    }
+
     await fetch(`/api/productos/${modoEdicion}`, {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(form),
+      body: JSON.stringify({
+        ...form,
+        precio: parseFloat(form.precio) || 0,
+        stock: parseInt(form.stock) || 0,
+      }),
     });
+
+
     setModoEdicion(null);
     fetchProductos();
   };
@@ -76,9 +102,17 @@ export default function InventarioPage() {
                 />
                 <input
                   type="number"
+                  placeholder="Precio"
+                  value={form.precio}
+                  onChange={(e) => setForm({ ...form, precio: e.target.value })}
+                  className="w-full border p-2 rounded"
+                />
+
+                <input
+                  type="number"
                   placeholder="Stock"
                   value={form.stock}
-                  onChange={(e) => setForm({ ...form, stock: parseInt(e.target.value) })}
+                  onChange={(e) => setForm({ ...form, stock: e.target.value })}
                   className="w-full border p-2 rounded"
                 />
                 <button
@@ -97,8 +131,10 @@ export default function InventarioPage() {
                 />
                 <h2 className="text-lg font-bold">{producto.titulo}</h2>
                 <p className="text-sm text-gray-500">{producto.descripcion}</p>
+                <p className="text-sm text-gray-800 mt-1">
+                  Precio: ${producto.precio?.toFixed(0)}
+                </p>
                 <p className="text-sm text-gray-700 mt-1">Stock: {producto.stock}</p>
-
                 <div className="mt-4 flex justify-between text-sm">
                   <button
                     onClick={() => handleEditar(producto)}

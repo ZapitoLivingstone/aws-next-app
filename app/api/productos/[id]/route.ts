@@ -19,6 +19,7 @@ export async function PUT(req: NextRequest) {
       titulo: body.titulo,
       descripcion: body.descripcion,
       imagenUrl: body.imagenUrl || '',
+      precio: body.precio ?? 0,
       stock: body.stock ?? 0,
     },
   });

@@ -9,6 +9,7 @@ export default function NuevoProducto() {
   const [descripcion, setDescripcion] = useState('');
   const [imagenUrl, setImagenUrl] = useState('');
   const [stock, setStock] = useState('');
+  const [precio, setPrecio] = useState('');
   const [error, setError] = useState('');
   const [cargando, setCargando] = useState(false);
 
@@ -44,6 +45,7 @@ export default function NuevoProducto() {
         descripcion,
         imagenUrl,
         stock: parseInt(stock),
+        precio: parseFloat(precio),
       }),
       headers: { 'Content-Type': 'application/json' },
     });
@@ -95,6 +97,17 @@ export default function NuevoProducto() {
             onChange={(e) => setImagenUrl(e.target.value)}
             className="w-full p-3 border border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-blue-200"
           />
+        </div>
+        <div>
+          <label className="block text-sm font-semibold text-gray-700 mb-1">Precio</label>
+          <input
+          type="number"
+          placeholder="0"
+          value={precio}
+          onChange={(e) => setPrecio(e.target.value)}
+          className="w-full p-2 border rounded"
+          required
+        />
         </div>
 
         <div>

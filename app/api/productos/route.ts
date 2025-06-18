@@ -20,6 +20,7 @@ export async function POST(req: NextRequest) {
       titulo: body.titulo,
       descripcion: body.descripcion,
       imagenUrl: body.imagenUrl || '',
+      precio: body.precio || 0,
       stock: stock,
     },
   });
